@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<classPathEntry
+		location="/Users/lyn/.m2/repository/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar" />
+	<context id="mybatis">
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		<jdbcConnection
+			connectionURL="jdbc:mysql://127.0.0.1:3306/lctravel?useUnicode=true&amp;characterEncoding=UTF-8"
+			driverClass="com.mysql.jdbc.Driver" password="dreamlyn" userId="root" />
+		<javaModelGenerator targetPackage="com.lc.travel.entity"
+			targetProject="LCTravel/src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<sqlMapGenerator targetPackage="com.lc.travel.mapper"
+			targetProject="LCTravel/src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</sqlMapGenerator>
+		<javaClientGenerator targetPackage="com.lc.travel.dao"
+			targetProject="LCTravel/src/main/java" type="XMLMAPPER">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaClientGenerator>
+
+		<!-- <table tableName="travel" domainObjectName="Travel"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+			<columnOverride column="id" property="id" />
+			<columnOverride column="linename" property="lineName" />
+			<columnOverride column="price" property="price" />
+			<columnOverride column="rebate" property="rebate" />
+		</table> -->
+		<table tableName="travel" domainObjectName="Travel"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false">
+			<columnOverride column="peerstate" property="peerState" />
+			<columnOverride column="travelid" property="travelId" />
+		</table>
+	</context>
+</generatorConfiguration>
+

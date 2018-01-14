@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.travel.dao.TravelMapper">
+	<resultMap id="BaseResultMap" type="com.lc.travel.entity.Travel">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="seats" jdbcType="INTEGER" property="seats" />
+		<result column="date" jdbcType="VARCHAR" property="date" />
+		<result column="plate" jdbcType="VARCHAR" property="plate" />
+		<result column="carowner" jdbcType="VARCHAR" property="carowner" />
+		<result column="driver" jdbcType="VARCHAR" property="driver" />
+		<result column="driverphone" jdbcType="VARCHAR" property="driverphone" />
+		<result column="guide" jdbcType="VARCHAR" property="guide" />
+		<result column="guidephone" jdbcType="VARCHAR" property="guidephone" />
+		<result column="destination" jdbcType="VARCHAR" property="destination" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, seats, date, plate, carowner, driver, driverphone, guide,
+		guidephone, destination
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from travel
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from travel
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.lc.travel.entity.Travel">
+		insert into travel (id, name, seats,
+		date, plate, carowner,
+		driver, driverphone, guide,
+		guidephone, destination)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{seats,jdbcType=INTEGER},
+		#{date,jdbcType=VARCHAR}, #{plate,jdbcType=VARCHAR}, #{carowner,jdbcType=VARCHAR},
+		#{driver,jdbcType=VARCHAR}, #{driverphone,jdbcType=VARCHAR},
+		#{guide,jdbcType=VARCHAR},
+		#{guidephone,jdbcType=VARCHAR}, #{destination,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.lc.travel.entity.Travel">
+		insert into travel
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="seats != null">
+				seats,
+			</if>
+			<if test="date != null">
+				date,
+			</if>
+			<if test="plate != null">
+				plate,
+			</if>
+			<if test="carowner != null">
+				carowner,
+			</if>
+			<if test="driver != null">
+				driver,
+			</if>
+			<if test="driverphone != null">
+				driverphone,
+			</if>
+			<if test="guide != null">
+				guide,
+			</if>
+			<if test="guidephone != null">
+				guidephone,
+			</if>
+			<if test="destination != null">
+				destination,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="seats != null">
+				#{seats,jdbcType=INTEGER},
+			</if>
+			<if test="date != null">
+				#{date,jdbcType=VARCHAR},
+			</if>
+			<if test="plate != null">
+				#{plate,jdbcType=VARCHAR},
+			</if>
+			<if test="carowner != null">
+				#{carowner,jdbcType=VARCHAR},
+			</if>
+			<if test="driver != null">
+				#{driver,jdbcType=VARCHAR},
+			</if>
+			<if test="driverphone != null">
+				#{driverphone,jdbcType=VARCHAR},
+			</if>
+			<if test="guide != null">
+				#{guide,jdbcType=VARCHAR},
+			</if>
+			<if test="guidephone != null">
+				#{guidephone,jdbcType=VARCHAR},
+			</if>
+			<if test="destination != null">
+				#{destination,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.lc.travel.entity.Travel">
+		update travel
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="seats != null">
+				seats = #{seats,jdbcType=INTEGER},
+			</if>
+			<if test="date != null">
+				date = #{date,jdbcType=VARCHAR},
+			</if>
+			<if test="plate != null">
+				plate = #{plate,jdbcType=VARCHAR},
+			</if>
+			<if test="carowner != null">
+				carowner = #{carowner,jdbcType=VARCHAR},
+			</if>
+			<if test="driver != null">
+				driver = #{driver,jdbcType=VARCHAR},
+			</if>
+			<if test="driverphone != null">
+				driverphone = #{driverphone,jdbcType=VARCHAR},
+			</if>
+			<if test="guide != null">
+				guide = #{guide,jdbcType=VARCHAR},
+			</if>
+			<if test="guidephone != null">
+				guidephone = #{guidephone,jdbcType=VARCHAR},
+			</if>
+			<if test="destination != null">
+				destination = #{destination,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.lc.travel.entity.Travel">
+		update travel
+		set name = #{name,jdbcType=VARCHAR},
+		seats = #{seats,jdbcType=INTEGER},
+		date = #{date,jdbcType=VARCHAR},
+		plate = #{plate,jdbcType=VARCHAR},
+		carowner = #{carowner,jdbcType=VARCHAR},
+		driver = #{driver,jdbcType=VARCHAR},
+		driverphone = #{driverphone,jdbcType=VARCHAR},
+		guide = #{guide,jdbcType=VARCHAR},
+		guidephone = #{guidephone,jdbcType=VARCHAR},
+		destination = #{destination,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<!-- 新添加 -->
+	<select id="getTouristCountWithTravelNotPay" resultType="java.lang.Integer">
+		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER} and
+		peerstate=0
+	</select>
+
+	<select id="getTouristCountWithTravelNotRebate" resultType="java.lang.Integer">
+		select count(1) from tourist where
+		travelid=#{travelId,jdbcType=INTEGER} and peerstate=1
+	</select>
+
+	<select id="getTouristCountWithTravel" resultType="java.lang.Integer">
+		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER}
+	</select>
+
+	<update id="updatePeerState">
+		update tourist
+		set
+		peerstate =
+		#{peerState,jdbcType=INTEGER}
+		where travelid =
+		#{travelId,jdbcType=INTEGER} and
+		peer =
+		#{peer,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteTourists">
+		delete tourist
+		where id in
+		<foreach item="touristId" index="index" collection="touristIds"
+			open="(" separator="," close=")">
+			#{touristId}
+		</foreach>
+	</delete>
+	<select id="getTouristsWithTravelId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tourist where travelid=#{travelId,jdbcType=INTEGER}
+		and peer in
+		<foreach item="peer" index="index" collection="peerList" open="("
+			separator="," close=")">
+			#{peer}
+		</foreach>
+
+		and peerState in
+		<foreach item="peerState" index="index" collection="peerStateList"
+			open="(" separator="," close=")">
+			#{peerState}
+		</foreach>
+
+		order by seat
+		<if test="seatSort">
+			asc
+		</if>
+		<if test="!seatSort">
+			desc
+		</if>
+
+	</select>
+</mapper>

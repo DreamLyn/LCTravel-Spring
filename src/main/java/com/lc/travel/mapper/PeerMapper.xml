@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.travel.dao.PeerMapper">
+	<resultMap id="SimpleResultMap" type="com.lc.travel.beans.PeerSimple">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+	</resultMap>
+	<resultMap id="BaseResultMap" type="com.lc.travel.entity.Peer">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="identity" jdbcType="VARCHAR" property="identity" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, identity, phone, address, email
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from peer
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from peer
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.lc.travel.entity.Peer">
+		insert into peer (id, name,
+		identity,
+		phone, address, email
+		)
+		values (#{id,jdbcType=INTEGER},
+		#{name,jdbcType=VARCHAR},
+		#{identity,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.lc.travel.entity.Peer">
+		insert into peer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="identity != null">
+				identity,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="identity != null">
+				#{identity,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.lc.travel.entity.Peer">
+		update peer
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="identity != null">
+				identity = #{identity,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.lc.travel.entity.Peer">
+		update peer
+		set
+		name = #{name,jdbcType=VARCHAR},
+		identity =
+		#{identity,jdbcType=VARCHAR},
+		phone = #{phone,jdbcType=VARCHAR},
+		address = #{address,jdbcType=VARCHAR},
+		email =
+		#{email,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="getPeers" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from peer
+	</select>
+
+	<select id="getPeerSimplesWithTravelId" resultMap="SimpleResultMap">
+		select
+		id,name
+		from
+		peer where id in (select peer from tourist where
+		travelid=#{travelId,jdbcType=INTEGER})
+	</select>
+
+	<select id="getAllPeerSimples" resultMap="SimpleResultMap">
+		select
+		id,name
+		from
+		peer
+	</select>
+
+	<select id="getPeerInfosWithCount" resultType="com.lc.travel.beans.PeerInfoWithCount">
+		SELECT
+		p.name,p.phone,t.count from peer as p,(select peer,count(1) as count
+		from tourist where travelid in (select id from travel where date
+		&gt;=#{startDate,jdbcType=INTEGER} and date
+		&lt;=#{endDate,jdbcType=INTEGER})
+		group by peer) as t where p.id=t.peer
+	</select>
+</mapper>

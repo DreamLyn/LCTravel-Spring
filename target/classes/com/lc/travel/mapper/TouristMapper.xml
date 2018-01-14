@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.travel.dao.TouristMapper">
+	<resultMap id="BaseResultMap" type="com.lc.travel.entity.Tourist">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="seat" jdbcType="INTEGER" property="seat" />
+		<result column="peer" jdbcType="INTEGER" property="peer" />
+		<result column="peerstate" jdbcType="INTEGER" property="peerState" />
+		<result column="locale" jdbcType="VARCHAR" property="locale" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="time" jdbcType="VARCHAR" property="time" />
+		<result column="travelid" jdbcType="INTEGER" property="travelId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, type, phone, seat, peer, peerstate, locale,
+		remark, time,
+		travelid
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tourist
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		tourist
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteByTravelId" parameterType="java.lang.Integer">
+		delete from
+		tourist
+		where travelid = #{travelId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteByName">
+		delete from
+		tourist
+		where travelid = #{travelId,jdbcType=INTEGER} 
+		and name=#{name,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="insert" parameterType="com.lc.travel.entity.Tourist">
+		insert into tourist (id, name,
+		type,
+		phone, seat, peer,
+		peerstate, locale, remark,
+		time, travelid)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER},
+		#{phone,jdbcType=VARCHAR},
+		#{seat,jdbcType=INTEGER}, #{peer,jdbcType=INTEGER},
+		#{peerState,jdbcType=INTEGER}, #{locale,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{time,jdbcType=VARCHAR},
+		#{travelId,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.lc.travel.entity.Tourist">
+		insert into tourist
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="seat != null">
+				seat,
+			</if>
+			<if test="peer != null">
+				peer,
+			</if>
+			<if test="peerState != null">
+				peerstate,
+			</if>
+			<if test="locale != null">
+				locale,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+			<if test="travelId != null">
+				travelid,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="seat != null">
+				#{seat,jdbcType=INTEGER},
+			</if>
+			<if test="peer != null">
+				#{peer,jdbcType=INTEGER},
+			</if>
+			<if test="peerState != null">
+				#{peerState,jdbcType=INTEGER},
+			</if>
+			<if test="locale != null">
+				#{locale,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=VARCHAR},
+			</if>
+			<if test="travelId != null">
+				#{travelId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.lc.travel.entity.Tourist">
+		update tourist
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="seat != null">
+				seat = #{seat,jdbcType=INTEGER},
+			</if>
+			<if test="peer != null">
+				peer = #{peer,jdbcType=INTEGER},
+			</if>
+			<if test="peerState != null">
+				peerstate = #{peerState,jdbcType=INTEGER},
+			</if>
+			<if test="locale != null">
+				locale = #{locale,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=VARCHAR},
+			</if>
+			<if test="travelId != null">
+				travelid = #{travelId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.lc.travel.entity.Tourist">
+		update tourist
+		set
+		name = #{name,jdbcType=VARCHAR},
+		type = #{type,jdbcType=INTEGER},
+		phone
+		= #{phone,jdbcType=VARCHAR},
+		seat = #{seat,jdbcType=INTEGER},
+		peer =
+		#{peer,jdbcType=INTEGER},
+		peerstate = #{peerState,jdbcType=INTEGER},
+		locale = #{locale,jdbcType=VARCHAR},
+		remark =
+		#{remark,jdbcType=VARCHAR},
+		time = #{time,jdbcType=VARCHAR},
+		travelid =
+		#{travelId,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+
+	<!-- 新添加 -->
+	<select id="getTouristCountWithTravelNotPay" resultType="java.lang.Integer">
+		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER} and peerstate=0
+	</select>
+	
+	<select id="getTouristCountWithTravelNotRebate" resultType="java.lang.Integer">
+		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER} and peerstate=1
+	</select>
+	
+	<select id="getTouristCountWithTravel" resultType="java.lang.Integer">
+		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER}
+	</select>
+
+	<update id="updatePeerState">
+		update tourist
+		set
+		peerstate =
+		#{peerState,jdbcType=INTEGER}
+		where travelid =
+		#{travelId,jdbcType=INTEGER} and
+		peer =
+		#{peer,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteTourists">
+		delete tourist
+		where id in
+		<foreach item="touristId" index="index" collection="touristIds"
+			open="(" separator="," close=")">
+			#{touristId}
+		</foreach>
+	</delete>
+	<select id="getTouristsWithTravelId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tourist where travelid=#{travelId,jdbcType=INTEGER}
+		and peer in
+		<foreach item="peer" index="index" collection="peerList" open="("
+			separator="," close=")">
+			#{peer}
+		</foreach>
+
+		and peerState in
+		<foreach item="peerState" index="index" collection="peerStateList"
+			open="(" separator="," close=")">
+			#{peerState}
+		</foreach>
+
+		order by seat
+		<if test="seatSort">
+			asc
+		</if>
+		<if test="!seatSort">
+			desc
+		</if>
+
+	</select>
+</mapper>
