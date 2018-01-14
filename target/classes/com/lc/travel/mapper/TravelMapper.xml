@@ -164,62 +164,55 @@
 		destination = #{destination,jdbcType=VARCHAR}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
-	<!-- 新添加 -->
-	<select id="getTouristCountWithTravelNotPay" resultType="java.lang.Integer">
-		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER} and
-		peerstate=0
-	</select>
-
-	<select id="getTouristCountWithTravelNotRebate" resultType="java.lang.Integer">
-		select count(1) from tourist where
-		travelid=#{travelId,jdbcType=INTEGER} and peerstate=1
-	</select>
-
-	<select id="getTouristCountWithTravel" resultType="java.lang.Integer">
-		select count(1) from tourist where travelid=#{travelId,jdbcType=INTEGER}
-	</select>
-
-	<update id="updatePeerState">
-		update tourist
-		set
-		peerstate =
-		#{peerState,jdbcType=INTEGER}
-		where travelid =
-		#{travelId,jdbcType=INTEGER} and
-		peer =
-		#{peer,jdbcType=INTEGER}
-	</update>
-	<delete id="deleteTourists">
-		delete tourist
-		where id in
-		<foreach item="touristId" index="index" collection="touristIds"
-			open="(" separator="," close=")">
-			#{touristId}
-		</foreach>
-	</delete>
-	<select id="getTouristsWithTravelId" resultMap="BaseResultMap">
+	<select id="getTravelsNotCompleted" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from tourist where travelid=#{travelId,jdbcType=INTEGER}
-		and peer in
-		<foreach item="peer" index="index" collection="peerList" open="("
-			separator="," close=")">
-			#{peer}
-		</foreach>
+		from travel
+		where id in (select distinct travelid from tourist where peerstate in
+		(0,1)) order by date desc
+	</select>
 
-		and peerState in
-		<foreach item="peerState" index="index" collection="peerStateList"
-			open="(" separator="," close=")">
-			#{peerState}
-		</foreach>
+	<select id="getTravelsNotCompletedWithNull" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from travel
+		where id in (select distinct travelid from tourist where peerstate in
+		(0,1))
+		or id not in (select distinct travelid from tourist) order by date desc
+	</select>
 
-		order by seat
-		<if test="seatSort">
-			asc
-		</if>
-		<if test="!seatSort">
-			desc
-		</if>
+	<select id="getTravelsWithFilterAndPeer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from travel
+		where date &lt;= #{endDate,jdbcType=VARCHAR} and
+		date &gt;= #{startDate,jdbcType=VARCHAR} and
+		destination=#{destination,jdbcType=VARCHAR}
+	</select>
 
+	<select id="getTravelsWithFilter" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from travel
+		where date &lt;= #{endDate,jdbcType=VARCHAR} and
+		date &gt;= #{startDate,jdbcType=VARCHAR}
+	</select>
+
+
+	<select id="getTravelCountWithFilterAndPeer" resultType="java.lang.Integer">
+		select
+		count(id)
+		from travel
+		where date &lt;= #{endDate,jdbcType=VARCHAR} and
+		date &gt;= #{startDate,jdbcType=VARCHAR} and
+		destination=#{destination,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getTravelCountWithFilter" resultType="java.lang.Integer">
+		select
+		count(id)
+		from travel
+		where date &lt;= #{endDate,jdbcType=VARCHAR} and
+		date &gt;= #{startDate,jdbcType=VARCHAR}
 	</select>
 </mapper>
