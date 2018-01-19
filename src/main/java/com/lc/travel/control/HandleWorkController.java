@@ -5,8 +5,10 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lc.travel.beans.PeerInfoWithCount;
 import com.lc.travel.beans.PeerSimple;
+import com.lc.travel.beans.PeerSta;
 import com.lc.travel.beans.SeatInfo;
 import com.lc.travel.beans.TouristDisplay;
 import com.lc.travel.entity.Peer;
@@ -59,7 +62,7 @@ public class HandleWorkController {
 		hashMap.put("content", arrayList);
 		return hashMap;
 	}
-	
+
 	/**
 	 * 根据日期获取旅行信息
 	 * 
@@ -74,19 +77,18 @@ public class HandleWorkController {
 		hashMap.put("content", arrayList);
 		return hashMap;
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/gettravelswithfilter")
 	@ResponseBody
-	public HashMap<String, Object> getTravelsWithFilter(String startDate,String endDate,String destination) {
+	public HashMap<String, Object> getTravelsWithFilter(String startDate, String endDate, String destination,int pageNow,int pageSize) {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		ArrayList<Travel> arrayList = travelService.getTravelsWithFilter(startDate,endDate,destination);
+		ArrayList<Travel> arrayList = travelService.getTravelsWithFilter(startDate, endDate, destination,pageNow,pageSize);
 		hashMap.put("status", "success");
 		hashMap.put("content", arrayList);
 		return hashMap;
+		
 	}
-	
+
 	/**
 	 * 
 	 * @param startDate
@@ -96,9 +98,9 @@ public class HandleWorkController {
 	 */
 	@RequestMapping(value = "/gettravelcountwithfilter")
 	@ResponseBody
-	public HashMap<String, Object> getTravelCountWithFilter(String startDate,String endDate,String destination) {
+	public HashMap<String, Object> getTravelCountWithFilter(String startDate, String endDate, String destination) {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		int count = travelService.getTravelCountWithFilter(startDate,endDate,destination);
+		int count = travelService.getTravelCountWithFilter(startDate, endDate, destination);
 		hashMap.put("status", "success");
 		hashMap.put("content", count);
 		return hashMap;
@@ -181,7 +183,6 @@ public class HandleWorkController {
 		return hashMap;
 	}
 
-
 	/**
 	 * 
 	 * @param travelId
@@ -255,9 +256,10 @@ public class HandleWorkController {
 		hashMap.put("content", arrayList);
 		return hashMap;
 	}
-	
+
 	/**
 	 * 获取表格内部显示的东西
+	 * 
 	 * @param travelId
 	 * @param peerString
 	 * @param peerStateString
@@ -278,10 +280,48 @@ public class HandleWorkController {
 		ArrayList<Integer> peerStateList = mapper.readValue(peerStateString, new TypeReference<List<Integer>>() {
 		});
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		ArrayList<TouristDisplay> arrayList = touristService.getTouristsDisWithTravelId(travelId, peerList, peerStateList,
-				seatSort);
+		ArrayList<TouristDisplay> arrayList = touristService.getTouristsDisWithTravelId(travelId, peerList,
+				peerStateList, seatSort);
 		hashMap.put("status", "success");
 		hashMap.put("content", arrayList);
+		return hashMap;
+	}
+
+	@RequestMapping(value = "/getpeerstatisticswithtravel")
+	@ResponseBody
+	public HashMap<String, Object> getPeerStatisticsWithTravel(int travelId)
+			throws JsonParseException, JsonMappingException, IOException {
+
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		ArrayList<TouristDisplay> arrayList = touristService.getPeerStatisticsWithTravelId(travelId);
+
+		HashMap<Integer, Integer> hashMap2 = new HashMap<Integer, Integer>();
+		for (TouristDisplay touristDisplay : arrayList) {
+			if (touristDisplay.getPeerState() == 0) {
+				// 如果未交款
+				if (hashMap2.containsKey(touristDisplay.getPeer())) {
+					Integer temp = hashMap2.get(touristDisplay.getPeer());
+					hashMap2.put(touristDisplay.getPeer(), temp + touristDisplay.getMoney());
+				} else {
+					hashMap2.put(touristDisplay.getPeer(), touristDisplay.getMoney());
+				}
+			}
+		}
+		ArrayList<PeerSta> arrayList2 = new ArrayList<PeerSta>();
+		Iterator iter = hashMap2.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			int key = (Integer) entry.getKey();
+			int val = (Integer) entry.getValue();
+			PeerSta peerSta = new PeerSta();
+			peerSta.setPeer(key);
+			peerSta.setMoney(val);
+
+			arrayList2.add(peerSta);
+		}
+
+		hashMap.put("status", "success");
+		hashMap.put("content", arrayList2);
 		return hashMap;
 	}
 
@@ -355,11 +395,10 @@ public class HandleWorkController {
 		hashMap.put("status", "success");
 		return hashMap;
 	}
-	
-	
+
 	@RequestMapping(value = "/deletetouristswithname")
 	@ResponseBody
-	public HashMap<String, Object> deleteTouristsWithName(Integer travelId,String name) {
+	public HashMap<String, Object> deleteTouristsWithName(Integer travelId, String name) {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 
 		if (touristService.deleteByName(travelId, name) > 0) {
@@ -382,7 +421,7 @@ public class HandleWorkController {
 	 */
 	@RequestMapping(value = "/deletetourists")
 	@ResponseBody
-	public HashMap<String, Object> deleteTourists(int travelId,String idString)
+	public HashMap<String, Object> deleteTourists(int travelId, String idString)
 			throws JsonParseException, JsonMappingException, IOException {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		ObjectMapper mapper = new ObjectMapper();
@@ -416,7 +455,16 @@ public class HandleWorkController {
 		return hashMap;
 	}
 	
-	
+	@RequestMapping(value = "/gettouristcountwithname")
+	@ResponseBody
+	public HashMap<String, Object> getTouristCountWithName(int travelId,String name) {
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		int count=touristService.getTouristCountWithName(travelId,name);
+		hashMap.put("status", "success");
+		hashMap.put("content", count);
+		return hashMap;
+	}
+
 	/**
 	 * 插入游客信息
 	 * 
@@ -428,14 +476,15 @@ public class HandleWorkController {
 	 */
 	@RequestMapping(value = "/inserttourists")
 	@ResponseBody
-	public HashMap<String, Object> insertTourists(String name,String phone,String seats,int peer,String remark,int travelId,int peerState) throws JsonParseException, JsonMappingException, IOException {
+	public HashMap<String, Object> insertTourists(String name, String phone, String seats, int peer, String remark,
+			int travelId, int peerState, int money) throws JsonParseException, JsonMappingException, IOException {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<SeatInfo> seatList = mapper.readValue(seats, new TypeReference<List<SeatInfo>>() {
 		});
-		ArrayList<Tourist> tourists=new ArrayList<Tourist>();
-		for(SeatInfo seat:seatList) {
-			Tourist tourist=new Tourist();
+		ArrayList<Tourist> tourists = new ArrayList<Tourist>();
+		for (SeatInfo seat : seatList) {
+			Tourist tourist = new Tourist();
 			tourist.setName(name);
 			tourist.setType(seat.getType());
 			tourist.setPhone(phone);
@@ -444,6 +493,7 @@ public class HandleWorkController {
 			tourist.setRemark(remark);
 			tourist.setTravelId(travelId);
 			tourist.setPeerState(peerState);
+			tourist.setMoney(money);
 			tourists.add(tourist);
 		}
 		touristService.insertSelectives(tourists);
@@ -463,14 +513,15 @@ public class HandleWorkController {
 	 */
 	@RequestMapping(value = "/edittourists")
 	@ResponseBody
-	public HashMap<String, Object> editTourists(String name,String phone,String seats,int peer,String remark,int travelId,int peerState) throws JsonParseException, JsonMappingException, IOException {
+	public HashMap<String, Object> editTourists(String oldname,String name, String phone, String seats, int peer, String remark,
+			int travelId, int peerState, int money) throws JsonParseException, JsonMappingException, IOException {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<SeatInfo> seatList = mapper.readValue(seats, new TypeReference<List<SeatInfo>>() {
 		});
-		ArrayList<Tourist> tourists=new ArrayList<Tourist>();
-		for(SeatInfo seat:seatList) {
-			Tourist tourist=new Tourist();
+		ArrayList<Tourist> tourists = new ArrayList<Tourist>();
+		for (SeatInfo seat : seatList) {
+			Tourist tourist = new Tourist();
 			tourist.setName(name);
 			tourist.setType(seat.getType());
 			tourist.setPhone(phone);
@@ -479,24 +530,25 @@ public class HandleWorkController {
 			tourist.setRemark(remark);
 			tourist.setTravelId(travelId);
 			tourist.setPeerState(peerState);
+			tourist.setMoney(money);
 			tourists.add(tourist);
 		}
-		touristService.editTourists(tourists);
+		touristService.editTourists(tourists,oldname);
 		hashMap.put("status", "success");
 		hashMap.put("content", "success");
 		return hashMap;
 	}
-	
-	
+
 	/**
 	 * 获取同行信息
+	 * 
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 */
 	@RequestMapping(value = "/getpeerinfoswithcount")
 	@ResponseBody
-	public HashMap<String, Object> getPeerInfosWithCount(String startDate,String endDate) {
+	public HashMap<String, Object> getPeerInfosWithCount(String startDate, String endDate) {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		ArrayList<PeerInfoWithCount> peerInfos = peerService.getPeerInfosWithCount(startDate, endDate);
 		hashMap.put("status", "success");

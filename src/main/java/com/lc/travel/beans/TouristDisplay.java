@@ -19,6 +19,16 @@ public class TouristDisplay {
 
 	private Integer travelId;
 
+	private Integer money;
+	
+	public Integer getMoney() {
+		return money;
+	}
+
+	public void setMoney(Integer money) {
+		this.money = money;
+	}
+
 	public String getName() {
 		return name;
 	}

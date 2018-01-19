@@ -93,6 +93,7 @@ public class TouristService {
 						touristDisplay.setPeerState(tourist.getPeerState());
 						touristDisplay.setPhone(tourist.getPhone());
 						touristDisplay.setRemark(tourist.getRemark());
+						touristDisplay.setMoney(tourist.getMoney());
 						touristDisplay.setTravelId(tourist.getTravelId());
 						seatNums.add(tourist.getSeat());
 						switch (tourist.getType()) {
@@ -121,6 +122,59 @@ public class TouristService {
 		} else {
 			return new ArrayList<TouristDisplay>();
 		}
+
+	}
+	
+	
+	public ArrayList<TouristDisplay> getPeerStatisticsWithTravelId(int travelId) throws JsonProcessingException {
+		
+			ArrayList<TouristDisplay> touristDisplays = new ArrayList<TouristDisplay>();
+			ArrayList<Tourist> arrayList = touristMapper.getTouristsWithTravelIdWithoutFilter(travelId);
+			HashSet<String> nameSet = new HashSet<String>();
+			for (Tourist tourist : arrayList) {
+				if (!nameSet.contains(tourist.getName())) {
+					nameSet.add(tourist.getName());
+				}
+			}
+
+			for (String name : nameSet) {
+				TouristDisplay touristDisplay = new TouristDisplay();
+				ArrayList<Integer> seatNums = new ArrayList<Integer>();
+				int seatTypes[] = new int[3];
+				for (Tourist tourist : arrayList) {
+					if (tourist.getName().equals(name)) {
+						touristDisplay.setName(tourist.getName());
+						touristDisplay.setPeer(tourist.getPeer());
+						touristDisplay.setPeerState(tourist.getPeerState());
+						touristDisplay.setPhone(tourist.getPhone());
+						touristDisplay.setRemark(tourist.getRemark());
+						touristDisplay.setMoney(tourist.getMoney());
+						touristDisplay.setTravelId(tourist.getTravelId());
+						seatNums.add(tourist.getSeat());
+						switch (tourist.getType()) {
+						case 0:
+							seatTypes[0]++;
+							break;
+						case 1:
+							seatTypes[1]++;
+							break;
+						case 2:
+							seatTypes[2]++;
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				ObjectMapper mapper = new ObjectMapper();
+				String seatNumsStr = mapper.writeValueAsString(seatNums);
+				touristDisplay.setSeats(seatNumsStr);
+				String seatTypesStr = seatTypes[0] + "成" + seatTypes[1] + "儿" + seatTypes[2] + "占";
+				touristDisplay.setSeatsdesc(seatTypesStr);
+				touristDisplays.add(touristDisplay);
+			}
+			return touristDisplays;
+		
 
 	}
 
@@ -195,6 +249,11 @@ public class TouristService {
 	public int insertSelective(Tourist record) {
 		return touristMapper.insertSelective(record);
 	}
+	
+	
+	public int getTouristCountWithName(int travelId,String name){
+		return touristMapper.getTouristCountWithName(travelId,name);
+	}
 
 	public void insertSelectives(ArrayList<Tourist> records) {
 		for (Tourist tourist : records) {
@@ -203,10 +262,10 @@ public class TouristService {
 	}
 	
 	
-	public void editTourists(ArrayList<Tourist> records) {
+	public void editTourists(ArrayList<Tourist> records,String oldname) {
 		Tourist touristR=records.get(0);
 		String name=touristR.getName();
-		touristMapper.deleteByName(touristR.getTravelId(), touristR.getName());
+		touristMapper.deleteByName(touristR.getTravelId(), oldname);
 		for (Tourist tourist : records) {
 			touristMapper.insertSelective(tourist);
 		}

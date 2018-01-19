@@ -23,6 +23,8 @@ public class Tourist {
 
     private Integer travelId;
 
+    private Integer money;
+
     public Integer getId() {
         return id;
     }
@@ -109,5 +111,13 @@ public class Tourist {
 
     public void setTravelId(Integer travelId) {
         this.travelId = travelId;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
     }
 }

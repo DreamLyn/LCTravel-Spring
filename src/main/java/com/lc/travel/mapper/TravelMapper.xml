@@ -187,7 +187,7 @@
 		from travel
 		where date &lt;= #{endDate,jdbcType=VARCHAR} and
 		date &gt;= #{startDate,jdbcType=VARCHAR} and
-		destination=#{destination,jdbcType=VARCHAR}
+		destination=#{destination,jdbcType=VARCHAR} limit #{rowStart},#{pageSize}
 	</select>
 
 	<select id="getTravelsWithFilter" resultMap="BaseResultMap">
@@ -195,7 +195,7 @@
 		<include refid="Base_Column_List" />
 		from travel
 		where date &lt;= #{endDate,jdbcType=VARCHAR} and
-		date &gt;= #{startDate,jdbcType=VARCHAR}
+		date &gt;= #{startDate,jdbcType=VARCHAR} limit #{rowStart},#{pageSize}
 	</select>
 
 

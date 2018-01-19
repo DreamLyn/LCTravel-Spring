@@ -35,7 +35,7 @@
 			<columnOverride column="price" property="price" />
 			<columnOverride column="rebate" property="rebate" />
 		</table> -->
-		<table tableName="travel" domainObjectName="Travel"
+		<table tableName="tourist" domainObjectName="Tourist"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">

@@ -60,7 +60,7 @@ public class TravelService {
 		}
 	}
 	
-	public ArrayList<Travel> getTravelsWithFilter(String startDate,String endDate,String destination) {
+	public ArrayList<Travel> getTravelsWithFilter(String startDate,String endDate,String destination,int pageNow,int pageSize) {
 //		ArrayList<Travel> arrayList = travelMapper.getTravelsWithDate(date);
 //		return arrayList;
 		
@@ -75,9 +75,9 @@ public class TravelService {
 			endDate="2990-01-01";
 		}
 		if(destination.equals("全部")) {
-			return travelMapper.getTravelsWithFilter(startDate, endDate);
+			return travelMapper.getTravelsWithFilter(startDate, endDate,pageSize*(pageNow-1),pageSize);
 		}else {
-			return travelMapper.getTravelsWithFilterAndPeer(startDate, endDate, destination);
+			return travelMapper.getTravelsWithFilterAndPeer(startDate, endDate, destination,pageSize*(pageNow-1),pageSize);
 		}
 	}
 	

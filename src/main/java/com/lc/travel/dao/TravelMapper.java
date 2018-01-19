@@ -23,10 +23,12 @@ public interface TravelMapper {
 
     ArrayList<Travel> getTravelsNotCompletedWithNull();
 
-    ArrayList<Travel> getTravelsWithFilter(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    ArrayList<Travel> getTravelsWithFilter(@Param("startDate") String startDate, @Param("endDate") String endDate,
+    		@Param("rowStart") int rowStart,@Param("pageSize") int pageSize);
 
     ArrayList<Travel> getTravelsWithFilterAndPeer(@Param("startDate") String startDate,
-    		@Param("endDate") String endDate, @Param("destination") String destination);
+    		@Param("endDate") String endDate, @Param("destination") String destination,
+    		@Param("rowStart") int rowStart,@Param("pageSize") int pageSize);
 
     int getTravelCountWithFilter(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
